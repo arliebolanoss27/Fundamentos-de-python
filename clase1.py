@@ -2,7 +2,7 @@
 Clase:        Variables, tipos, entradas y salidas
 Tema:         Variables
 Ejercicio:    Ejercicios con variables
-Descripción:  
+Descripción:  Hacer un total de la cuenta con propina al usuario y Hacer una división con decimales y con presición.
 
 Autor:        Arlette Bolaños
 Fecha:        2025-05-22
