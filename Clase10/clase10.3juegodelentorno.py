@@ -11,3 +11,22 @@ Autor:        Arlette Bolaños
 Fecha:        2025-06-09
 Estado:       [   En progreso ]
 '''
+
+n = int(input())
+m = int(input())
+
+datos = []
+for i in range(n):
+    datos.append(list(map(int, input().split(','))))
+
+res = [[0]*m for _ in range(n)]
+
+for i in range(n):
+    for j in range(m):
+        for x in range(i-1, i+2):
+            for y in range(j-1, j+2):
+                if 0 <= x < n and 0 <= y < m and not (x == i and y == j):
+                    res[i][j] += datos[x][y]
+
+for fila in res:
+    print(fila)
