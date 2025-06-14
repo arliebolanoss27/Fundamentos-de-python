@@ -9,7 +9,7 @@ izquierda, derecha, diagonales).
 
 Autor:        Arlette Bolaños
 Fecha:        2025-06-09
-Estado:       [   En progreso ]
+Estado:       [   Terminado]
 '''
 
 n = int(input())
