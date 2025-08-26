@@ -1,0 +1,225 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <limits>
+
+// --- Definición de la clase Libro (mejorada) ---
+class Libro {
+public:
+    std::string titulo;
+    std::string autor;
+    int anioPublicacion;
+    bool estaDisponible; // Nuevo atributo
+
+    // Constructor para inicializar los valores fácilmente
+    Libro() : anioPublicacion(0), estaDisponible(true) {}
+    
+    // Constructor con parámetros
+    Libro(const std::string& t, const std::string& a, int anio) 
+        : titulo(t), autor(a), anioPublicacion(anio), estaDisponible(true) {}
+
+    void mostrarDetallesCompletos() {
+        std::cout << "\n=== DETALLES DEL LIBRO ===" << std::endl;
+        std::cout << "Título: " << titulo << std::endl;
+        std::cout << "Autor: " << autor << std::endl;
+        std::cout << "Año de publicación: " << anioPublicacion << std::endl;
+        std::cout << "Estado: " << (estaDisponible ? "Disponible" : "Prestado") << std::endl;
+        std::cout << "==========================" << std::endl;
+    }
+};
+
+// --- Definición de la clase Biblioteca ---
+class Biblioteca {
+private:
+    std::vector<Libro> coleccion;
+
+public:
+    void agregarLibro(const Libro& nuevoLibro) {
+        // Verificar si el libro ya existe (evitar duplicados)
+        for (const auto& libro : coleccion) {
+            if (libro.titulo == nuevoLibro.titulo) {
+                std::cout << "Error: Ya existe un libro con el título '" << nuevoLibro.titulo << "'" << std::endl;
+                return;
+            }
+        }
+        
+        coleccion.push_back(nuevoLibro);
+        std::cout << "Libro '" << nuevoLibro.titulo << "' agregado exitosamente." << std::endl;
+    }
+
+    void mostrarInventario() {
+        if (coleccion.empty()) {
+            std::cout << "\nLa biblioteca está vacía. No hay libros en el inventario." << std::endl;
+            return;
+        }
+        
+        std::cout << "\n=== INVENTARIO DE LA BIBLIOTECA ===" << std::endl;
+        std::cout << "Total de libros: " << coleccion.size() << std::endl;
+        std::cout << "===================================" << std::endl;
+        
+        for (size_t i = 0; i < coleccion.size(); ++i) {
+            std::cout << "\nLibro #" << (i + 1) << ":";
+            coleccion[i].mostrarDetallesCompletos();
+        }
+    }
+
+    Libro* buscarLibro(const std::string& tituloBuscado) {
+        for (auto& libro : coleccion) {
+            if (libro.titulo == tituloBuscado) {
+                return &libro;
+            }
+        }
+        return nullptr;
+    }
+
+    void prestarLibro(const std::string& tituloPrestamo) {
+        Libro* libro = buscarLibro(tituloPrestamo);
+        
+        if (libro == nullptr) {
+            std::cout << "Error: No se encontró el libro '" << tituloPrestamo << "' en la biblioteca." << std::endl;
+            return;
+        }
+        
+        if (!libro->estaDisponible) {
+            std::cout << "Error: El libro '" << tituloPrestamo << "' ya está prestado." << std::endl;
+            return;
+        }
+        
+        libro->estaDisponible = false;
+        std::cout << "Libro '" << tituloPrestamo << "' prestado exitosamente." << std::endl;
+    }
+
+    void devolverLibro(const std::string& tituloDevolucion) {
+        Libro* libro = buscarLibro(tituloDevolucion);
+        
+        if (libro == nullptr) {
+            std::cout << "Error: No se encontró el libro '" << tituloDevolucion << "' en la biblioteca." << std::endl;
+            return;
+        }
+        
+        if (libro->estaDisponible) {
+            std::cout << "Error: El libro '" << tituloDevolucion << "' ya está disponible en la biblioteca." << std::endl;
+            return;
+        }
+        
+        libro->estaDisponible = true;
+        std::cout << "Libro '" << tituloDevolucion << "' devuelto exitosamente." << std::endl;
+    }
+    
+    // Método para obtener el número de libros
+    size_t obtenerNumeroLibros() const {
+        return coleccion.size();
+    }
+};
+
+// Función para limpiar el buffer de entrada
+void limpiarBuffer() {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// Función para leer una línea de texto
+std::string leerLinea() {
+    std::string linea;
+    std::getline(std::cin, linea);
+    return linea;
+}
+
+// Función para leer un entero
+int leerEntero() {
+    int valor;
+    while (!(std::cin >> valor)) {
+        std::cout << "Error: Por favor ingrese un número válido: ";
+        limpiarBuffer();
+    }
+    return valor;
+}
+
+// --- Función Principal con el Menú ---
+int main() {
+    Biblioteca miBiblioteca;
+    int opcion = 0;
+
+    // Agregar algunos libros de ejemplo para empezar
+    Libro libro1("The Hunger Games", "Suzanne Collins", 2008);
+    Libro libro2("The Fault in Our Stars", "John Green", 2012);
+    Libro libro3("To All the Boys I’ve Loved Before", "Jenny Han", 2014);  
+    
+    miBiblioteca.agregarLibro(libro1);
+    miBiblioteca.agregarLibro(libro2);
+    miBiblioteca.agregarLibro(libro3);
+
+    std::cout << " Libros en coleccion: " 
+          << miBiblioteca.obtenerNumeroLibros() << std::endl; 
+miBiblioteca.mostrarInventario(); // para verlos antes del menú
+
+    std::cout << "=== SISTEMA DE GESTIÓN DE BIBLIOTECA ===" << std::endl;
+    std::cout << "Bienvenido al sistema de gestión de inventario de biblioteca." << std::endl;
+
+    while (opcion != 5) {
+        std::cout << "\n--- BIBLIOTECA DIGITAL ---" << std::endl;
+        std::cout << "1. Añadir libro" << std::endl;
+        std::cout << "2. Mostrar inventario" << std::endl;
+        std::cout << "3. Prestar libro" << std::endl;
+        std::cout << "4. Devolver libro" << std::endl;
+        std::cout << "5. Salir" << std::endl;
+        std::cout << "Seleccione una opción: ";
+        
+        opcion = leerEntero();
+        limpiarBuffer();
+
+        switch (opcion) {
+            case 1: {
+                std::cout << "\n--- AÑADIR NUEVO LIBRO ---" << std::endl;
+                
+                std::cout << "Ingrese el título del libro: ";
+                std::string titulo = leerLinea();
+                
+                std::cout << "Ingrese el autor del libro: ";
+                std::string autor = leerLinea();
+                
+                std::cout << "Ingrese el año de publicación: ";
+                int anio = leerEntero();
+                limpiarBuffer();
+                
+                Libro nuevoLibro(titulo, autor, anio);
+                miBiblioteca.agregarLibro(nuevoLibro);
+                break;
+            }
+            
+            case 2: {
+                miBiblioteca.mostrarInventario();
+                break;
+            }
+            
+            case 3: {
+                std::cout << "\n--- PRESTAR LIBRO ---" << std::endl;
+                std::cout << "Ingrese el título del libro a prestar: ";
+                std::string tituloPrestamo = leerLinea();
+                miBiblioteca.prestarLibro(tituloPrestamo);
+                break;
+            }
+            
+            case 4: {
+                std::cout << "\n--- DEVOLVER LIBRO ---" << std::endl;
+                std::cout << "Ingrese el título del libro a devolver: ";
+                std::string tituloDevolucion = leerLinea();
+                miBiblioteca.devolverLibro(tituloDevolucion);
+                break;
+            }
+            
+            case 5: {
+                std::cout << "\nGracias por usar el sistema de gestión de biblioteca." << std::endl;
+                std::cout << "¡Hasta luego!" << std::endl;
+                break;
+            }
+            
+            default: {
+                std::cout << "Opción no válida. Por favor seleccione una opción del 1 al 5." << std::endl;
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
